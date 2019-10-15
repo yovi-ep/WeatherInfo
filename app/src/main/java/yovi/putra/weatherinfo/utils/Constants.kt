@@ -1,4 +1,4 @@
-package yovi.putra.mvvm_databinding_corountines_retrofit.utils
+package yovi.putra.weatherinfo.utils
 
 object Constants {
     const val BASE_URL = "https://api.openweathermap.org/data/2.5/"

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import yovi.putra.mvvm_databinding_corountines_retrofit.utils.Constants
+import yovi.putra.weatherinfo.utils.Constants
 import yovi.putra.weatherinfo.R
 import yovi.putra.weatherinfo.adapters.ForecastDailyAdapter
 import yovi.putra.weatherinfo.adapters.ForecastHourlyAdapter
@@ -29,6 +29,10 @@ class MainActivity : BaseActivity(), MainContract.View {
     override fun setupLayout(): Int = R.layout.activity_main
 
     override fun setupData() {
+        adapterHourly = ForecastHourlyAdapter()
+        adapterDaily = ForecastDailyAdapter()
+        presenter = MainPresenter(this)
+
         checkPermission(
             mutableListOf(
                 Manifest.permission.INTERNET,
@@ -36,10 +40,6 @@ class MainActivity : BaseActivity(), MainContract.View {
                 Manifest.permission.READ_PHONE_STATE
             )
         ) {
-            adapterHourly = ForecastHourlyAdapter()
-            adapterDaily = ForecastDailyAdapter()
-            presenter = MainPresenter(this)
-
             presenter.getWeatherCurrent(-6.2348516, 106.617299)
             presenter.getForecastHourly(-6.2348516, 106.617299)
             presenter.getForecastDaily(-6.2348516, 106.617299)

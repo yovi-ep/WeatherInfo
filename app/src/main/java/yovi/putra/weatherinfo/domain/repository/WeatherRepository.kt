@@ -1,7 +1,7 @@
 package yovi.putra.weatherinfo.domain.repository
 
 import io.reactivex.Observable
-import yovi.putra.mvvm_databinding_corountines_retrofit.utils.Constants
+import yovi.putra.weatherinfo.utils.Constants
 import yovi.putra.weatherinfo.base.BaseRepository
 import yovi.putra.weatherinfo.domain.api.WeatherApi
 import yovi.putra.weatherinfo.models.CurrentWeather

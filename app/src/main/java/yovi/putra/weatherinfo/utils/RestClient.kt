@@ -25,7 +25,7 @@ class RestClient {
             .retryOnConnectionFailure(true)
             .build()
 
-        Retrofit.Builder().baseUrl("")
+        Retrofit.Builder().baseUrl(Constants.BASE_URL)
             .client(okhttp)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -1,5 +1,6 @@
 package yovi.putra.weatherinfo.base
 
+import yovi.putra.weatherinfo.utils.Constants
 import yovi.putra.weatherinfo.utils.RestClient
 
 
@@ -15,7 +16,7 @@ abstract class BaseRepository {
     inline fun <reified API> apiSample() : API {
         return RestClient()
             .get()
-            //.baseUrl(SyncStateContract.Constants.BASE_URL_SAMPLE)
+            .baseUrl(Constants.BASE_URL_SAMPLE)
             .build()
             .create(API::class.java)
     }
