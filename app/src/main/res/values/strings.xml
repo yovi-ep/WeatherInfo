@@ -7,4 +7,6 @@
     <string name="no_internet_connection">Masalah jaringan, cek koneksi internet Anda dan silahkan coba lagi</string>
     <string name="server_under_maintenance">Server sedang dalam pemeliharaan</string>
     <string name="cannot_connect_toserver">Tidak dapat berkomunikasi dengan server, coba beberapa saat lagi</string>
+
+    <string name="lbl_template">%s°</string>
 </resources>
