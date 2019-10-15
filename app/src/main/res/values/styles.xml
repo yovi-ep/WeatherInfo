@@ -1,11 +1,48 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textAppearance">@style/TextView</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="TextView" parent="android:TextAppearance">
+        <item name="android:textColor">@color/colorTextViewSecondary</item>
+        <item name="android:gravity">left</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <!--___________ TEXT SIZE ___________-->
+
+    <style name="TextView.Small" parent="TextView">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextView.Medium" parent="TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextView.ExtraBig" parent="TextView">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="TextView.MultiExtraBigger" parent="TextView">
+        <item name="android:textSize">96sp</item>
+    </style>
+
+    <!--___________ TEXT BOLD ___________-->
+
+    <style name="TextView.SmallBold" parent="TextView.Small">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextView.ExtraBigBold" parent="TextView.ExtraBig">
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>
