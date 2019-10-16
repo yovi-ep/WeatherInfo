@@ -26,3 +26,7 @@ Berikut komponen dari aplikasi:
       MainActivity: Sebagai interface user yang akan mengontrol dan handle semua event atapun data yang akan ditampilkan
       Contract: sebagai Interface Segregation Principle
       ViewModel: Bisnis logic yang akan memproses data/input output dari view ke repository
+
+Instrument Test
+> Melakukan testing pada UI aplikasi, apakah yang ditampilkan sudah sesuai yang dibutuhkan.
+Pada instrument test dilakukan pengecekan swipe refresh bekerja dan hasil refresh data dipastikan update ke recyclerview
