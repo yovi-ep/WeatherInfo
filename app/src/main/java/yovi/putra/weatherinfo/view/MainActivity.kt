@@ -4,7 +4,6 @@ import android.Manifest
 import android.location.Location
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
@@ -13,9 +12,6 @@ import yovi.putra.weatherinfo.R
 import yovi.putra.weatherinfo.adapters.ForecastDailyAdapter
 import yovi.putra.weatherinfo.adapters.ForecastHourlyAdapter
 import yovi.putra.weatherinfo.base.BaseActivity
-import yovi.putra.weatherinfo.models.CurrentWeather
-import yovi.putra.weatherinfo.models.ForecastDaily
-import yovi.putra.weatherinfo.models.ForecastHourly
 import yovi.putra.weatherinfo.utils.*
 
 class MainActivity : BaseActivity(), MainContract.View {
@@ -28,28 +24,6 @@ class MainActivity : BaseActivity(), MainContract.View {
     private lateinit var viewModel: MainViewModel
     private lateinit var adapterHourly: ForecastHourlyAdapter
     private lateinit var adapterDaily: ForecastDailyAdapter
-
-    private val currentWeatherObserver = Observer<CurrentWeather> {
-        val dt = DateUtils.parser(it.dt?.toLong()?:0)
-        val icon = CommonUtils.getIcon(it.weather[0].main)
-
-        tv_address.text = it.name
-        tv_datetime.text = DateUtils.format(dt, Constants.DATE_FORMAT_DEFAULT)
-        tv_temperature.text = CommonUtils.getTemperature(this, it.main?.temp)
-        tv_weather.text = it.weather[0].main
-        img_weather.setImageResource(icon)
-        onShowLoading(false, CURRENT_LOADING)
-    }
-
-    private val forecastHourlyObserver = Observer<ForecastHourly> {
-        adapterHourly.setItem(it.list)
-        onShowLoading(false, HOURLY_LOADING)
-    }
-
-    private val forecastDailyObserver = Observer<ForecastDaily> {
-        adapterDaily.setItem(it.list)
-        onShowLoading(false, DAILY_LOADING)
-    }
 
     override fun setupLayout(): Int = R.layout.activity_main
 
@@ -89,10 +63,30 @@ class MainActivity : BaseActivity(), MainContract.View {
             }
     }
 
-    private fun doGetResource(it : Location) {
-        viewModel.getWeatherCurrent(it.latitude, it.longitude).observe(this, currentWeatherObserver)
-        viewModel.getForecastHourly(it.latitude, it.longitude).observe(this, forecastHourlyObserver)
-        viewModel.getForecastDaily(it.latitude, it.longitude).observe(this, forecastDailyObserver)
+    private fun doGetResource(location : Location) {
+        viewModel.getWeatherCurrent(location.latitude, location.longitude).reobserve(this) {
+            it?.let {
+                val dt = DateUtils.parser(it.dt?.toLong()?:0)
+                val icon = CommonUtils.getIcon(it.weather[0].main)
+
+                tv_address.text = it.name
+                tv_datetime.text = DateUtils.format(dt, Constants.DATE_FORMAT_DEFAULT)
+                tv_temperature.text = CommonUtils.getTemperature(this, it.main?.temp)
+                tv_weather.text = it.weather[0].main
+                img_weather.setImageResource(icon)
+            }
+            onShowLoading(false, CURRENT_LOADING)
+        }
+
+        viewModel.getForecastHourly(location.latitude, location.longitude).reobserve(this) {
+            it?.list?.let { it1 -> adapterHourly.setItem(it1) }
+            onShowLoading(false, HOURLY_LOADING)
+        }
+
+        viewModel.getForecastDaily(location.latitude, location.longitude).reobserve(this) {
+            it?.list?.let { it1 -> adapterDaily.setItem(it1) }
+            onShowLoading(false, DAILY_LOADING)
+        }
     }
 
     override fun setupUI() {
