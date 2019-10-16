@@ -4,6 +4,6 @@ package yovi.putra.weatherinfo.base
 /**
  * Created by yovi.putra
  */
-interface IBasePresenter {
+interface IBaseViewModel {
     fun onDestroyPresenter()
 }

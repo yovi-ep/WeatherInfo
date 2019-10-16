@@ -1,6 +1,7 @@
 package yovi.putra.weatherinfo.view
 
-import yovi.putra.weatherinfo.base.IBasePresenter
+import androidx.lifecycle.LiveData
+import yovi.putra.weatherinfo.base.IBaseViewModel
 import yovi.putra.weatherinfo.base.IBaseView
 import yovi.putra.weatherinfo.models.CurrentWeather
 import yovi.putra.weatherinfo.models.ForecastDaily
@@ -8,20 +9,14 @@ import yovi.putra.weatherinfo.models.ForecastHourly
 
 interface MainContract {
 
-    interface View : IBaseView {
-        fun onWeatherCurrent(weather: CurrentWeather)
+    interface View : IBaseView
 
-        fun onForecastDaily(weather: ForecastDaily)
+    interface ViewModel : IBaseViewModel {
+        fun getWeatherCurrent(latitude: Double, longitude: Double) : LiveData<CurrentWeather>
 
-        fun onForecastHourly(weather: ForecastHourly)
-    }
+        fun getForecastDaily(latitude: Double, longitude: Double) : LiveData<ForecastDaily>
 
-    interface Presenter : IBasePresenter {
-        fun getWeatherCurrent(latitude: Double, longitude: Double)
-
-        fun getForecastDaily(latitude: Double, longitude: Double)
-
-        fun getForecastHourly(latitude: Double, longitude: Double)
+        fun getForecastHourly(latitude: Double, longitude: Double) : LiveData<ForecastHourly>
     }
 
 }

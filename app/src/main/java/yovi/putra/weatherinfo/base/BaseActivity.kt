@@ -2,6 +2,7 @@ package yovi.putra.weatherinfo.base
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import yovi.putra.weatherinfo.utils.DialogUtils
 import yovi.putra.weatherinfo.R

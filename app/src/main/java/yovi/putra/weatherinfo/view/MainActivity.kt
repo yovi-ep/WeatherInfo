@@ -3,9 +3,10 @@ package yovi.putra.weatherinfo.view
 import android.Manifest
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import yovi.putra.weatherinfo.utils.Constants
 import yovi.putra.weatherinfo.R
 import yovi.putra.weatherinfo.adapters.ForecastDailyAdapter
 import yovi.putra.weatherinfo.adapters.ForecastHourlyAdapter
@@ -22,17 +23,45 @@ class MainActivity : BaseActivity(), MainContract.View {
         const val HOURLY_LOADING = "hourly"
     }
 
-    private lateinit var presenter: MainContract.Presenter
+    private lateinit var viewModel: MainViewModel
     private lateinit var adapterHourly: ForecastHourlyAdapter
     private lateinit var adapterDaily: ForecastDailyAdapter
+
+    private val currentWeatherObserver = Observer<CurrentWeather> {
+        val dt = DateUtils.parser(it.dt?.toLong()?:0)
+        val icon = CommonUtils.getIcon(it.weather[0].main)
+
+        tv_address.text = it.name
+        tv_datetime.text = DateUtils.format(dt, Constants.DATE_FORMAT_DEFAULT)
+        tv_temperature.text = CommonUtils.getTemperature(this, it.main?.temp)
+        tv_weather.text = it.weather[0].main
+        img_weather.setImageResource(icon)
+        onShowLoading(false, CURRENT_LOADING)
+    }
+
+    private val forecastHourlyObserver = Observer<ForecastHourly> {
+        adapterHourly.setItem(it.list)
+        onShowLoading(false, HOURLY_LOADING)
+    }
+
+    private val forecastDailyObserver = Observer<ForecastDaily> {
+        adapterDaily.setItem(it.list)
+        onShowLoading(false, DAILY_LOADING)
+    }
 
     override fun setupLayout(): Int = R.layout.activity_main
 
     override fun setupData() {
         adapterHourly = ForecastHourlyAdapter()
         adapterDaily = ForecastDailyAdapter()
-        presenter = MainPresenter(this)
 
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel.setupView(this@MainActivity)
+
+        getResource()
+    }
+
+    private fun getResource() {
         checkPermission(
             mutableListOf(
                 Manifest.permission.INTERNET,
@@ -40,9 +69,12 @@ class MainActivity : BaseActivity(), MainContract.View {
                 Manifest.permission.READ_PHONE_STATE
             )
         ) {
-            presenter.getWeatherCurrent(-6.2348516, 106.617299)
-            presenter.getForecastHourly(-6.2348516, 106.617299)
-            presenter.getForecastDaily(-6.2348516, 106.617299)
+            viewModel.getWeatherCurrent(-6.2348516, 106.617299)
+                .observe(this, currentWeatherObserver)
+            viewModel.getForecastHourly(-6.2348516, 106.617299)
+                .observe(this, forecastHourlyObserver)
+            viewModel.getForecastDaily(-6.2348516, 106.617299)
+                .observe(this, forecastDailyObserver)
         }
     }
 
@@ -68,32 +100,14 @@ class MainActivity : BaseActivity(), MainContract.View {
         )
 
         swiperefresh.setOnRefreshListener {
-            setupData()
+            getResource()
+            swiperefresh.isRefreshing = false
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.onDestroyPresenter()
-    }
-
-    override fun onWeatherCurrent(weather: CurrentWeather) {
-        val dt = DateUtils.parser(weather.dt?.toLong()?:0)
-        val icon = CommonUtils.getIcon(weather.weather[0].main)
-
-        tv_address.text = weather.name
-        tv_datetime.text = DateUtils.format(dt, Constants.DATE_FORMAT_DEFAULT)
-        tv_temperature.text = CommonUtils.getTemperature(this, weather.main?.temp)
-        tv_weather.text = weather.weather[0].main
-        img_weather.setImageResource(icon)
-    }
-
-    override fun onForecastDaily(weather: ForecastDaily) {
-        adapterDaily.setItem(weather.list)
-    }
-
-    override fun onForecastHourly(weather: ForecastHourly) {
-        adapterHourly.setItem(weather.list)
+        viewModel.onDestroyPresenter()
     }
 
     override fun onShowLoading(isShow: Boolean, tag: String?) {
