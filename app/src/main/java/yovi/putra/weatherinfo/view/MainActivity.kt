@@ -1,11 +1,13 @@
 package yovi.putra.weatherinfo.view
 
 import android.Manifest
+import android.location.Location
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import yovi.putra.weatherinfo.R
 import yovi.putra.weatherinfo.adapters.ForecastDailyAdapter
@@ -66,16 +68,31 @@ class MainActivity : BaseActivity(), MainContract.View {
             mutableListOf(
                 Manifest.permission.INTERNET,
                 Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.READ_PHONE_STATE
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         ) {
-            viewModel.getWeatherCurrent(-6.2348516, 106.617299)
-                .observe(this, currentWeatherObserver)
-            viewModel.getForecastHourly(-6.2348516, 106.617299)
-                .observe(this, forecastHourlyObserver)
-            viewModel.getForecastDaily(-6.2348516, 106.617299)
-                .observe(this, forecastDailyObserver)
+            getLastLocation()
         }
+    }
+
+    private fun getLastLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.lastLocation
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful && task.result != null) {
+                    task.result?.let {
+                        doGetResource(it)
+                    }
+                }
+            }
+    }
+
+    private fun doGetResource(it : Location) {
+        viewModel.getWeatherCurrent(it.latitude, it.longitude).observe(this, currentWeatherObserver)
+        viewModel.getForecastHourly(it.latitude, it.longitude).observe(this, forecastHourlyObserver)
+        viewModel.getForecastDaily(it.latitude, it.longitude).observe(this, forecastDailyObserver)
     }
 
     override fun setupUI() {

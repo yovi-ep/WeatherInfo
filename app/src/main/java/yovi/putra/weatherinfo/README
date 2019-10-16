@@ -1,0 +1,28 @@
+================
+ARSITEKTUR
+================
+
+Weather Info adalah aplikasi yang membantu user untuk mengetahui kondisi cuaca lingkungannya,
+baik informasi cuaca saat ini, 3 jam kedepan ataupun beberapa kedepan.
+
+Aplikasi ini di develop menggunakan arsitektur MVVM, LiveData, Retrofit dan RxJava.
+
+Arsitektur MVVM dan live data diimplementasikan dengan tujuan untuk mempertahankan data saat siklus state save instance.
+Berikut komponen dari aplikasi:
+    - base
+      Implementasi bagian SOLID programming disini dengan tujuan permudah developer dalam mengembangkan kebutuhan yang sama
+    - adapters
+      Kumpulan semua adapter view yang digunakan
+    - domain
+      sebagai resource data, baik dari API ataupun respository
+      > API : Get resource data dari network
+      > Repository : manipulasi data yang data dari API, dan akan diteruskan ke ViewModel
+    - models
+      kumpulan semua entity yang akan diguunakan
+    - utils
+      class utility untuk mempermudah developer dalam pengembangan
+    - View
+      Terdiri dari 3 class: Activity/View, Contract, ViewModel
+      MainActivity: Sebagai interface user yang akan mengontrol dan handle semua event atapun data yang akan ditampilkan
+      Contract: sebagai Interface Segregation Principle
+      ViewModel: Bisnis logic yang akan memproses data/input output dari view ke repository

@@ -10,6 +10,7 @@ android {
         applicationId "yovi.putra.weatherinfo"
         minSdkVersion 19
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -70,4 +71,6 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'androidx.preference:preference:1.1.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
+
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }
